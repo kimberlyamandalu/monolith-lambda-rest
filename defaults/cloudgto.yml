@@ -4,8 +4,8 @@ defaults:
   region: us-east-2
   lambda:
     timeout: 30
-    memorySize: 1024
-    runtime: nodejs16.x
+    memorySize: 128
+    runtime: nodejs18.x
   version: "3"
 cognito:
-  userPoolArn: arn:aws:cognito-idp:us-west-2:0123456789:userpool/us-west-2_xxxxxxx
+  userPoolArn: arn:aws:cognito-idp:us-east-2:428875117125:userpool/us-east-2_si6ZSXfmJ
