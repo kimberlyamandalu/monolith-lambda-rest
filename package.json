@@ -1,0 +1,47 @@
+{
+	"name": "monolith-rest",
+	"version": "1.0.0",
+	"description": "monolith lambda test",
+	"main": "index.js",
+	"scripts": {
+		"lint": "node_modules/.bin/eslint .",
+		"setup": "npm i && sls deploy",
+		"auth": "bash ./scripts/auth.bash",
+		"format": "prettier --write .",
+		"getJWT": "npm run auth dev us-east-2 signup && npm run auth dev us-east-2 signin",
+		"getAPIKey": "aws apigateway get-api-keys --name-query monolith-rest-api-dev-api-key --region us-east-2 --include-values --query 'items[0].value' --output text",
+		"test": "jest",
+		"test:coverage": "jest --coverage"
+	},
+	"devDependencies": {
+		"@aws-sdk/client-dynamodb": "^3.341.0",
+		"@aws-sdk/lib-dynamodb": "^3.341.0",
+		"@aws-sdk/client-sqs": "^3.354.0",
+		"@serverless/compose": "^1.2.4",
+		"serverless": "^3.15.2",
+		"serverless-offline": "^8.8.1",
+		"serverless-deployment-bucket": "^1.6.0",
+		"serverless-iam-roles-per-function": "^3.2.0",
+		"eslint": "*",
+		"prettier": "*",
+		"@aws-sdk/util-endpoints": "*",
+		"aws-sdk": "*",
+		"serverless-webpack": "*",
+		"webpack": "*",
+		"serverless-prune-plugin": "*",
+		"jest": "*",
+		"aws-sdk-client-mock": "*"
+	},
+	"dependencies": {
+		"crypto": "*"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"jest": {
+		"testTimeout": 20000,
+		"verbose": true,
+		"collectCoverage": false,
+		"testEnvironment": "node"
+	}
+}

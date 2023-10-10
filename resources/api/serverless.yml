@@ -1,0 +1,113 @@
+service: ${self:custom.defaults.service}-api
+frameworkVersion: ${self:custom.defaults.version}
+provider:
+  name: aws
+  stage: ${self:custom.defaults.stage}
+  region: ${self:custom.defaults.region}
+  deploymentBucket:
+    name: ${self:custom.defaults.service}-${self:provider.region}-${aws:accountId}
+    serverSideEncryption: AES256
+  tracing:
+    apiGateway: true
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    REGION: ${self:provider.region}
+    STAGE: ${self:provider.stage}
+  logs:
+    restApi: false
+custom:
+  base: ${self:service}-${self:provider.stage}
+  defaults: ${file(../../defaults/cloudgto.yml):defaults}
+  stackNames:
+    api: ${self:custom.base}
+    cognito: ${self:custom.defaults.service}-auth-${self:provider.stage}
+plugins:
+  - serverless-deployment-bucket
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${self:custom.base}
+    GatewayResponseDefault4XX:
+      DependsOn: ApiGatewayRestApi
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+    GatewayResponseDefault5XX:
+      DependsOn: ApiGatewayRestApi
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+    MockMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ResourceId:
+          Fn::GetAtt:
+            - ApiGatewayRestApi
+            - RootResourceId
+        AuthorizationType: NONE
+        HttpMethod: GET
+        Integration:
+          Type: MOCK
+    ApiDeployment:
+      DependsOn:
+        - MockMethod
+      Type: AWS::ApiGateway::Deployment
+      Properties:
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        StageName: ${self:provider.stage}
+    ApiKey:
+      DependsOn: ApiGatewayRestApi
+      Type: AWS::ApiGateway::ApiKey
+      Properties:
+        Name: ${self:custom.base}-api-key
+        Enabled: "true"
+    ApiKeyUsagePlan:
+      DependsOn:
+        - ApiDeployment
+      Type: AWS::ApiGateway::UsagePlan
+      Properties:
+        ApiStages:
+          - ApiId:
+              Ref: ApiGatewayRestApi
+            Stage: ${self:provider.stage}
+        Description: Usage plan for using API Key with API
+        UsagePlanName: ${self:custom.base}-usage-plan
+    ApiKeyUsagePlanKey:
+      Type: AWS::ApiGateway::UsagePlanKey
+      Properties:
+        KeyId:
+          Ref: ApiKey
+        KeyType: API_KEY
+        UsagePlanId:
+          Ref: ApiKeyUsagePlan
+  Outputs:
+    ApiId:
+      Value:
+        Ref: ApiGatewayRestApi
+    ApiResourceId:
+      Value:
+        Fn::GetAtt:
+          - ApiGatewayRestApi
+          - RootResourceId
+    ApiUrl:
+      Value:
+        Fn::Join:
+          - ""
+          - - https://
+            - Ref: ApiGatewayRestApi
+            - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}

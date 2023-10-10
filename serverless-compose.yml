@@ -1,0 +1,11 @@
+services:
+  api:
+    path: resources/api
+  monolith-items-ddb:
+    path: resources/dynamodb/monolith-items-ddb
+  monolith-rest:
+    params:
+      API_GATEWAY_REST_API_ID: ${api.ApiId}
+      API_GATEWAY_REST_API_ROOT_RESOURCE_ID: ${api.ApiResourceId}
+      DYNAMODB_TABLE_MONOLITH-ITEMS-DDB: ${monolith-items-ddb.DynamoDBTableName}
+    path: services/monolith-rest

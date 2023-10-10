@@ -1,0 +1,11 @@
+defaults:
+  service: monolith-rest
+  stage: dev
+  region: us-east-2
+  lambda:
+    timeout: 30
+    memorySize: 1024
+    runtime: nodejs16.x
+  version: "3"
+cognito:
+  userPoolArn: arn:aws:cognito-idp:us-west-2:0123456789:userpool/us-west-2_xxxxxxx

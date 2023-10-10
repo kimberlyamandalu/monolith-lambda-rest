@@ -1,0 +1,57 @@
+service: ${self:custom.defaults.service}-ddb-monolith-items-ddb
+frameworkVersion: ${self:custom.defaults.version}
+provider:
+  name: aws
+  stage: ${self:custom.defaults.stage}
+  region: ${self:custom.defaults.region}
+  deploymentBucket:
+    name: ${self:custom.defaults.service}-${self:provider.region}-${aws:accountId}
+    serverSideEncryption: AES256
+custom:
+  base: ${self:service}-${self:provider.stage}
+  defaults: ${file(../../../defaults/cloudgto.yml):defaults}
+plugins:
+  - serverless-deployment-bucket
+resources:
+  Resources:
+    DynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.base}-monolith-items-ddb
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: item
+            AttributeType: S
+          - AttributeName: owner
+            AttributeType: S
+          - AttributeName: item
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: item
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: owner-item
+            KeySchema:
+              - AttributeName: owner
+                KeyType: HASH
+              - AttributeName: item
+                KeyType: RANGE
+            Projection:
+              ProjectionType: KEYS_ONLY
+        Tags:
+          - Key: description
+            Value: stores item info
+  Outputs:
+    DynamoDBTableName:
+      Description: DynamoDB Table Name
+      Value: ${self:custom.base}-monolith-items-ddb
+    DynamoDBTableArn:
+      Description: DynamoDB Table Arn
+      Value:
+        Fn::GetAtt:
+          - DynamoDbTable
+          - Arn
