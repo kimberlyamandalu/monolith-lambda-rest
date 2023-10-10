@@ -26,8 +26,6 @@ resources:
             AttributeType: S
           - AttributeName: owner
             AttributeType: S
-          - AttributeName: item
-            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
