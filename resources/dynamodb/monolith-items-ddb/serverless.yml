@@ -29,8 +29,6 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: item
-            KeyType: RANGE
         GlobalSecondaryIndexes:
           - IndexName: owner-item
             KeySchema:
