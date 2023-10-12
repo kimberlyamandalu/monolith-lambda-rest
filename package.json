@@ -6,7 +6,7 @@
 	"scripts": {
 		"lint": "node_modules/.bin/eslint .",
 		"setup": "npm i && npx cross-env AWS_PROFILE=dev sls deploy",
-		"auth": "npx cross-env AWS_PROFILE=dev bash -x ./scripts/auth.bash",
+		"auth": "npx cross-env AWS_PROFILE=dev bash ./scripts/auth.bash",
 		"format": "prettier --write .",
 		"getJWT": "npx cross-env AWS_PROFILE=dev npm run auth dev us-east-2 signup && npm run auth dev us-east-2 signin",
 		"getAPIKey": "npx cross-env AWS_PROFILE=dev aws apigateway get-api-keys --name-query monolith-rest-api-dev-api-key --region us-east-2 --include-values --query 'items[0].value' --output text",
@@ -34,7 +34,7 @@
 		"webpack": "*"
 	},
 	"dependencies": {
-		"crypto": "*"
+		"crypto": "^1.0.1"
 	},
 	"keywords": [],
 	"author": "",
