@@ -35,10 +35,9 @@ exports.handler = async (event) => {
       case 'PUT':
         return await updateItemById(event);
       default:
-        return errorResponse({ statusCode: 400, message: 'Invalid HTTP method' });
+        return errorResponse({ statusCode: 400, message: 'Invalid HTTP Method' });
     }
   } catch (error) {
-    console.error('Error:', error);
     return errorResponse({ statusCode: 500, message: 'Internal Server Error' });
   }
 };
@@ -55,7 +54,6 @@ async function getItemById(event) {
     };
 
     const ddbRes = await getItem(TableName, Item);
-
     if (!ddbRes.Item)
       throw {
         statusCode: 400,
