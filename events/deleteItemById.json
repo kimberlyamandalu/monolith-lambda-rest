@@ -1,0 +1,13 @@
+{
+	"httpMethod": "DELETE",
+	"requestContext": {
+		"authorizer": {
+			"claims": {
+				"sub": "1234abcd"
+			}
+		}
+	},
+	"pathParameters": {
+		"id": "XXXXXXXREPLACE_WITH_REAL_VALUEXXXXXXX"
+	}
+}

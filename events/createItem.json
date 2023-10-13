@@ -1,0 +1,11 @@
+{
+	"httpMethod": "POST",
+	"requestContext": {
+		"authorizer": {
+			"claims": {
+				"sub": "1234abcd"
+			}
+		}
+	},
+	"body": "{\"productName\":\"Off White Sneakers\",\"productPrice\":\"99.00\"}"
+}

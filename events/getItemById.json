@@ -1,0 +1,13 @@
+{
+	"httpMethod": "GET",
+	"requestContext": {
+		"authorizer": {
+			"claims": {
+				"sub": "1234abcd"
+			}
+		}
+	},
+	"pathParameters": {
+		"id": "123456789"
+	}
+}
