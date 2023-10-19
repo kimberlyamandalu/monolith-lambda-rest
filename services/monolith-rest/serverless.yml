@@ -59,6 +59,13 @@ functions:
           private: true
           authorizer:
             arn: ${file(../../defaults/cloudgto.yml):cognito.userPoolArn}
+      - http:
+          path: /items/{id}
+          method: ANY
+          cors: true
+          private: true
+          authorizer:
+            arn: ${file(../../defaults/cloudgto.yml):cognito.userPoolArn}
 plugins:
   - serverless-offline
   - serverless-deployment-bucket

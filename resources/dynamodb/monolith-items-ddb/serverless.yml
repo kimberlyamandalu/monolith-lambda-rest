@@ -26,13 +26,9 @@ resources:
             AttributeType: S
           - AttributeName: owner
             AttributeType: S
-          - AttributeName: item
-            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: item
-            KeyType: RANGE
         GlobalSecondaryIndexes:
           - IndexName: owner-item
             KeySchema:
